@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NanoApple — Ultra-Lightweight Edge AI | CES 2027</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #1a1a2e;
+  --accent: #00e5ff;
+  --accent2: #7c4dff;
+  --accent3: #00e676;
+  --danger: #ff5252;
+  --gold: #ffd740;
+  --orange: #ff9100;
+  --pink: #ff4081;
+  --text: #e8e8f0;
+  --text2: #8888aa;
+  --gradient: linear-gradient(135deg, #00e5ff, #7c4dff);
+  --gradient2: linear-gradient(135deg, #00e676, #00e5ff);
+  --gradient3: linear-gradient(135deg, #ff4081, #ff9100);
+  --glow: 0 0 40px rgba(0,229,255,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(ellipse at 20% 50%, rgba(0,229,255,0.03) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(124,77,255,0.03) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 80%, rgba(0,230,118,0.02) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 14px 40px;
+  background: rgba(10,10,15,0.88);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-size: 20px; font-weight: 900; letter-spacing: -0.5px;
+  background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.nav-links { display: flex; gap: 28px; }
+.nav-links a {
+  color: var(--text2); text-decoration: none; font-size: 12px; font-weight: 500;
+  letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-badge {
+  background: var(--gradient); color: #000; font-weight: 700; font-size: 11px;
+  padding: 6px 14px; border-radius: 20px; letter-spacing: 1px;
+}
+
+section { position: relative; z-index: 1; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 40px 80px;
+  position: relative; overflow: hidden;
+}
+.hero-grid {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridPulse 8s ease-in-out infinite;
+}
+@keyframes gridPulse { 0%,100%{opacity:.3} 50%{opacity:.7} }
+
+.particles { position: absolute; top:0; left:0; width:100%; height:100%; overflow:hidden; pointer-events:none; }
+.particle {
+  position: absolute; width: 2px; height: 2px;
+  background: var(--accent); border-radius: 50%; opacity: 0;
+  animation: float 6s infinite;
+}
+@keyframes float { 0%{opacity:0;transform:translateY(100vh) scale(0)} 50%{opacity:.6} 100%{opacity:0;transform:translateY(-100px) scale(1)} }
+
+.hero-content { position: relative; z-index: 2; }
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 20px; border-radius: 30px;
+  background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.2);
+  font-size: 13px; color: var(--accent); font-weight: 500; letter-spacing: 1px;
+  margin-bottom: 32px;
+}
+.hero-chip .dot { width:6px; height:6px; border-radius:50%; background:var(--accent3); animation:blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.hero h1 {
+  font-size: clamp(48px, 7vw, 100px);
+  font-weight: 900; letter-spacing: -3px; line-height: 1; margin-bottom: 12px;
+}
+.gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-sub2 {
+  font-size: clamp(20px, 3vw, 36px); font-weight: 300; color: var(--text2);
+  margin-bottom: 20px; letter-spacing: -0.5px;
+}
+.hero-desc {
+  font-size: 16px; color: var(--text2); max-width: 700px; margin: 0 auto 48px;
+  line-height: 1.6;
+}
+
+/* DOMAIN PILLS */
+.domain-pills {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+.domain-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 30px;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.3px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  transition: all 0.3s;
+}
+.domain-pill:hover { border-color: var(--accent); background: rgba(0,229,255,0.05); }
+.domain-pill .pill-icon { font-size: 18px; }
+.domain-pill.active { border-color: var(--accent); background: rgba(0,229,255,0.08); color: var(--accent); }
+
+/* HERO STATS */
+.hero-stats { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+.hero-stat { text-align: center; }
+.hero-stat .value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 42px; font-weight: 600;
+  background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+.hero-stat .value span { font-size: 22px; }
+.hero-stat .label {
+  font-size: 11px; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 2px; margin-top: 6px;
+}
+
+/* SECTION HEADERS */
+.section-header { text-align: center; margin-bottom: 64px; }
+.section-tag {
+  font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--accent); font-weight: 600; margin-bottom: 16px;
+}
+.section-title {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800; letter-spacing: -1.5px; line-height: 1.1;
+}
+.section-desc {
+  font-size: 15px; color: var(--text2); max-width: 600px;
+  margin: 16px auto 0; line-height: 1.6;
+}
+
+/* CAPABILITY CARDS */
+.cap-section { padding: 100px 0; }
+.cap-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+.cap-card {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 36px 32px;
+  position: relative; overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.cap-card:hover { transform: translateY(-4px); border-color: rgba(0,229,255,0.2); }
+.cap-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; opacity: 0; transition: opacity 0.3s;
+}
+.cap-card:hover::before { opacity: 1; }
+.cap-card.speech::before { background: var(--gradient); }
+.cap-card.vision::before { background: var(--gradient3); }
+.cap-card.video::before { background: linear-gradient(135deg, #7c4dff, #00e5ff); }
+.cap-card.direction::before { background: linear-gradient(135deg, #ffd740, #ff9100); }
+.cap-card.tracking::before { background: linear-gradient(135deg, #00e676, #00e5ff); }
+.cap-card.recognition::before { background: linear-gradient(135deg, #ff4081, #7c4dff); }
+
+.cap-icon { font-size: 40px; margin-bottom: 16px; }
+.cap-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.cap-desc { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+
+.cap-specs { display: flex; flex-wrap: wrap; gap: 8px; }
+.cap-spec {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 8px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 500;
+}
+.cap-spec .spec-val { color: var(--accent); font-weight: 700; }
+
+.cap-badge {
+  position: absolute; top: 20px; right: 20px;
+  font-size: 10px; font-weight: 700; padding: 4px 10px;
+  border-radius: 12px; letter-spacing: 0.5px;
+}
+.cap-badge.live { background: var(--accent3); color: #000; }
+.cap-badge.research { background: var(--accent2); color: #fff; }
+.cap-badge.proto { background: var(--orange); color: #000; }
+
+/* METRICS GRID */
+.metrics-section { padding: 100px 0; }
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.metric-card {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px; padding: 28px 24px;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.metric-card:hover { transform: translateY(-3px); border-color: rgba(0,229,255,0.2); }
+.metric-card .icon { font-size: 24px; margin-bottom: 12px; }
+.metric-card .metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px; font-weight: 600; margin-bottom: 4px;
+}
+.metric-card .metric-label { font-size: 12px; color: var(--text2); font-weight: 500; }
+.metric-card .metric-compare { margin-top: 10px; font-size: 11px; color: var(--accent3); font-weight: 600; }
+.metric-card.cyan .metric-value { color: var(--accent); }
+.metric-card.purple .metric-value { color: var(--accent2); }
+.metric-card.green .metric-value { color: var(--accent3); }
+.metric-card.gold .metric-value { color: var(--gold); }
+.metric-card.red .metric-value { color: var(--danger); }
+.metric-card.pink .metric-value { color: var(--pink); }
+
+/* COMPARISON TABLE */
+.comparison-section { padding: 100px 0; }
+.comparison-table-wrap {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; overflow-x: auto;
+}
+.comparison-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.comparison-table th {
+  padding: 16px 16px; text-align: left;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text2); border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.3); white-space: nowrap;
+}
+.comparison-table td {
+  padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap;
+}
+.comparison-table tr:last-child td { border-bottom: none; }
+.comparison-table .model-name { font-family: 'Inter', sans-serif; font-weight: 600; }
+.comparison-table .highlight-row { background: rgba(0,229,255,0.04); }
+.comparison-table .highlight-row .model-name { color: var(--accent); }
+.comparison-table .best { color: var(--accent3); font-weight: 700; }
+.comparison-table .crown::after { content: ' \u2605'; color: var(--gold); }
+
+/* NOISE ROBUSTNESS */
+.noise-section { padding: 100px 0; }
+.noise-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.noise-control {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 36px;
+}
+.snr-display { text-align: center; margin-bottom: 28px; }
+.snr-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 64px; font-weight: 600; color: var(--accent); line-height: 1;
+}
+.snr-unit { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.snr-slider {
+  width: 100%; -webkit-appearance: none; height: 8px; border-radius: 4px;
+  background: linear-gradient(to right, var(--danger), var(--gold), var(--accent3));
+  outline: none; margin: 20px 0;
+}
+.snr-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%;
+  background: white; cursor: pointer; box-shadow: 0 0 16px rgba(0,229,255,0.5);
+}
+.snr-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); }
+.noise-bars { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
+.noise-bar-item { display: flex; align-items: center; gap: 14px; }
+.noise-bar-label { width: 110px; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+.noise-bar-track { flex: 1; height: 28px; background: rgba(255,255,255,0.03); border-radius: 8px; overflow: hidden; }
+.noise-bar-fill {
+  height: 100%; border-radius: 8px; transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+  display: flex; align-items: center; padding-right: 10px; justify-content: flex-end;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #000;
+  min-width: 45px;
+}
+.noise-bar-fill.nano { background: var(--gradient2); }
+.noise-bar-fill.bcres { background: rgba(255,82,82,0.7); }
+.noise-bar-fill.dscnn { background: rgba(255,215,64,0.7); }
+
+.noise-chart-wrap {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 36px;
+}
+
+/* EFFICIENCY */
+.efficiency-section { padding: 100px 0; }
+.efficiency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.chart-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 36px;
+}
+.chart-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+.chart-container { position: relative; height: 300px; }
+
+/* ARCHITECTURE */
+.arch-section { padding: 100px 0; }
+.arch-pipeline {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; flex-wrap: wrap; padding: 40px 0;
+}
+.arch-stage {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 18px 20px; text-align: center;
+  min-width: 120px; transition: transform 0.3s, border-color 0.3s;
+}
+.arch-stage:hover { transform: translateY(-4px); border-color: var(--accent); }
+.arch-stage .stage-icon { font-size: 24px; margin-bottom: 6px; }
+.arch-stage .stage-name { font-size: 12px; font-weight: 600; }
+.arch-stage .stage-detail { font-size: 10px; color: var(--text2); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+.arch-arrow { color: var(--accent); font-size: 20px; padding: 0 6px; opacity: 0.5; }
+.arch-stage.highlight { border-color: rgba(0,229,255,0.3); background: rgba(0,229,255,0.05); box-shadow: var(--glow); }
+
+/* VISION DEMO */
+.vision-section { padding: 100px 0; }
+.vision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.vision-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 36px; position: relative;
+}
+.vision-canvas-wrap {
+  background: #000; border-radius: 12px; overflow: hidden;
+  position: relative; margin-bottom: 20px;
+  aspect-ratio: 16/10;
+}
+.vision-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
+.vision-overlay {
+  position: absolute; top: 12px; left: 12px;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+  padding: 6px 12px; border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--accent3);
+}
+
+/* LIVE DEMO PANELS */
+.demo-section { padding: 100px 0; }
+.demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.demo-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px; padding: 32px; text-align: center;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.demo-card:hover { transform: translateY(-4px); border-color: rgba(0,229,255,0.2); }
+.demo-icon { font-size: 48px; margin-bottom: 16px; }
+.demo-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.demo-desc { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+.demo-viz {
+  background: #000; border-radius: 12px; height: 180px;
+  position: relative; overflow: hidden;
+}
+
+/* TRACKING VIZ */
+.tracking-viz { position: relative; }
+.track-dot {
+  position: absolute; width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--accent); background: rgba(0,229,255,0.3);
+}
+.track-trail {
+  position: absolute; height: 2px; background: var(--accent);
+  opacity: 0.4; transform-origin: left center;
+}
+.track-bbox {
+  position: absolute; border: 2px solid; border-radius: 4px;
+}
+
+/* DIRECTION ESTIMATOR */
+.direction-viz {
+  display: flex; align-items: center; justify-content: center;
+  height: 100%;
+}
+.compass {
+  width: 140px; height: 140px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.1);
+  position: relative; display: flex; align-items: center; justify-content: center;
+}
+.compass-arrow {
+  width: 4px; height: 60px; background: var(--gradient);
+  border-radius: 2px; transform-origin: bottom center;
+  animation: compassSpin 4s ease-in-out infinite;
+  position: absolute; bottom: 50%;
+}
+@keyframes compassSpin {
+  0%{transform:rotate(-30deg)} 25%{transform:rotate(45deg)}
+  50%{transform:rotate(20deg)} 75%{transform:rotate(-15deg)}
+  100%{transform:rotate(-30deg)}
+}
+.compass-label {
+  position: absolute; font-size: 10px; color: var(--text2); font-weight: 600;
+}
+.compass-label.n { top: 8px; }
+.compass-label.s { bottom: 8px; }
+.compass-label.e { right: 8px; }
+.compass-label.w { left: 8px; }
+
+/* MCU */
+.mcu-section { padding: 100px 0; }
+.mcu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.mcu-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px; padding: 32px 24px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.mcu-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.mcu-card .mcu-spec { font-size: 12px; color: var(--text2); margin-bottom: 20px; }
+.mcu-stat { display: flex; justify-content: space-between; padding: 7px 0; border-top: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+.mcu-stat .stat-label { color: var(--text2); }
+.mcu-stat .stat-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--accent); }
+.mcu-card .badge {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--gradient); color: #000; font-size: 9px; font-weight: 700;
+  padding: 3px 9px; border-radius: 10px; letter-spacing: 0.5px;
+}
+
+/* CTA */
+.cta-section { padding: 120px 0; text-align: center; }
+.cta-section h2 {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900; letter-spacing: -2px; margin-bottom: 20px;
+}
+.cta-section p { font-size: 16px; color: var(--text2); max-width: 600px; margin: 0 auto 40px; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 36px; border-radius: 50px;
+  background: var(--gradient); color: #000; font-weight: 700; font-size: 14px;
+  text-decoration: none; letter-spacing: 0.5px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: none; cursor: pointer;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,229,255,0.3); }
+
+footer {
+  padding: 40px; text-align: center;
+  font-size: 11px; color: var(--text2);
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+/* ADVANTAGE BADGES */
+.advantage-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+.adv-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; background: rgba(0,230,118,0.06);
+  border: 1px solid rgba(0,230,118,0.15);
+  border-radius: 30px; font-size: 13px; font-weight: 600;
+}
+.adv-badge .adv-num { font-family: 'JetBrains Mono', monospace; color: var(--accent3); font-size: 16px; }
+
+/* ANIMATIONS */
+.fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s, transform 0.8s; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .noise-demo, .efficiency-grid, .vision-grid { grid-template-columns: 1fr; }
+  .mcu-grid, .demo-grid, .cap-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .container { padding: 0 20px; }
+  .arch-pipeline { flex-direction: column; }
+  .arch-arrow { transform: rotate(90deg); }
+  .hero-stats { gap: 20px; }
+  .domain-pills { gap: 8px; }
+}
+
+/* WAVEFORM */
+.waveform-mini {
+  display: flex; align-items: center; justify-content: center; gap: 2px;
+  height: 100%;
+}
+.waveform-mini .bar {
+  width: 3px; background: var(--gradient); border-radius: 2px;
+  animation: wave 1.2s ease-in-out infinite;
+}
+@keyframes wave { 0%,100%{height:6px;opacity:.4} 50%{height:40px;opacity:1} }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">&#127822; NanoApple</div>
+  <div class="nav-links">
+    <a href="#capabilities">Capabilities</a>
+    <a href="#metrics">Metrics</a>
+    <a href="#comparison">Benchmark</a>
+    <a href="#noise">Noise</a>
+    <a href="#demos">Live Demo</a>
+    <a href="#deployment">Deploy</a>
+  </div>
+  <div class="nav-badge">CES 2027</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-chip">
+      <span class="dot"></span>
+      CES 2027 &mdash; WORLD PREMIERE
+    </div>
+    <h1><span class="gradient-text">&#127822; NanoApple</span></h1>
+    <div class="hero-sub2">Ultra-Lightweight Multi-Modal Edge AI Platform</div>
+    <p class="hero-desc">
+      Speech, Vision, Video, Direction Estimation & Object Tracking<br>
+      on sub-256KB MCUs. The world's most efficient on-device AI.<br>
+      <strong style="color:var(--accent)">Powered by NanoApple-Tiny</strong> &mdash; just 4,600 parameters.
+    </p>
+
+    <div class="domain-pills">
+      <div class="domain-pill active"><span class="pill-icon">&#127908;</span> Speech / KWS</div>
+      <div class="domain-pill"><span class="pill-icon">&#128065;</span> Image Recognition</div>
+      <div class="domain-pill"><span class="pill-icon">&#127909;</span> Video Understanding</div>
+      <div class="domain-pill"><span class="pill-icon">&#129517;</span> Direction Estimation</div>
+      <div class="domain-pill"><span class="pill-icon">&#127919;</span> Object Tracking</div>
+    </div>
+
+    <div style="margin-bottom:24px;font-size:12px;color:var(--text2);letter-spacing:2px;text-transform:uppercase">NanoApple-Tiny Model Specs</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="value">4,600</div>
+        <div class="label">Parameters</div>
+      </div>
+      <div class="hero-stat">
+        <div class="value">2.1<span>M</span></div>
+        <div class="label">MACs</div>
+      </div>
+      <div class="hero-stat">
+        <div class="value">4.4<span>ms</span></div>
+        <div class="label">Latency</div>
+      </div>
+      <div class="hero-stat">
+        <div class="value">18<span>KB</span></div>
+        <div class="label">RAM</div>
+      </div>
+      <div class="hero-stat">
+        <div class="value">0.9<span>mJ</span></div>
+        <div class="label">Energy</div>
+      </div>
+    </div>
+
+    <div class="advantage-row">
+      <div class="adv-badge"><span class="adv-num">1.8x</span> Fewer MACs</div>
+      <div class="adv-badge"><span class="adv-num">5.8x</span> MAC Efficiency</div>
+      <div class="adv-badge"><span class="adv-num">+11%p</span> Noise Robust</div>
+      <div class="adv-badge"><span class="adv-num">6</span> Modalities</div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section class="cap-section" id="capabilities">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Capabilities</div>
+      <div class="section-title">One Architecture,<br>Every Modality</div>
+      <div class="section-desc">NC-SSM (Noise-Conditioned State Space Model) adapts its dynamics per-input, enabling a single ultra-compact architecture to power speech, vision, video, and spatial AI.</div>
+    </div>
+    <div class="cap-grid">
+
+      <div class="cap-card speech fade-in">
+        <div class="cap-badge live">PUBLISHED</div>
+        <div class="cap-icon">&#127908;</div>
+        <div class="cap-title">Keyword Spotting (KWS)</div>
+        <div class="cap-desc">12-class keyword detection with structural noise robustness. NC-SSM retains 77.7% accuracy at 0 dB SNR without any noise augmentation &mdash; 11%p above CNN baselines.</div>
+        <div class="cap-specs">
+          <div class="cap-spec"><span class="spec-val">95.3%</span> Clean Acc</div>
+          <div class="cap-spec"><span class="spec-val">7.5K</span> Params</div>
+          <div class="cap-spec"><span class="spec-val">3.42M</span> MACs</div>
+          <div class="cap-spec"><span class="spec-val">7.1ms</span> Latency</div>
+        </div>
+      </div>
+
+      <div class="cap-card vision fade-in">
+        <div class="cap-badge research">ICCV 2027</div>
+        <div class="cap-icon">&#128065;</div>
+        <div class="cap-title">Image Recognition (NC-Conv)</div>
+        <div class="cap-desc">Degraded-input image classification using noise-conditioned CNN+SSM hybrid. Dynamic/static path blending based on learned image quality gate &sigma;. +6.1% on corrupted images.</div>
+        <div class="cap-specs">
+          <div class="cap-spec"><span class="spec-val">88.7%</span> CIFAR-10</div>
+          <div class="cap-spec"><span class="spec-val">84.5%</span> Corrupted Avg</div>
+          <div class="cap-spec"><span class="spec-val">+13.5%</span> Fog</div>
+          <div class="cap-spec"><span class="spec-val">0-param</span> Quality Est.</div>
+        </div>
+      </div>
+
+      <div class="cap-card video fade-in">
+        <div class="cap-badge proto">PROTOTYPE</div>
+        <div class="cap-icon">&#127909;</div>
+        <div class="cap-title">Video Understanding</div>
+        <div class="cap-desc">Temporal NC-SSM processes video frame sequences with SNR-adaptive state dynamics. Recurrent state enables efficient frame-by-frame inference without buffering entire clips.</div>
+        <div class="cap-specs">
+          <div class="cap-spec"><span class="spec-val">~15K</span> Params</div>
+          <div class="cap-spec"><span class="spec-val">Streaming</span> Mode</div>
+          <div class="cap-spec"><span class="spec-val">&lt;10ms</span> /frame</div>
+          <div class="cap-spec"><span class="spec-val">SSM</span> Temporal</div>
+        </div>
+      </div>
+
+      <div class="cap-card direction fade-in">
+        <div class="cap-badge proto">PROTOTYPE</div>
+        <div class="cap-icon">&#129517;</div>
+        <div class="cap-title">Direction of Arrival (DoA)</div>
+        <div class="cap-desc">Multi-mic beamforming + NC-SSM for sound source localization. Per-frequency SNR estimation drives spatial selectivity, enabling robust DoA even in 0 dB noise environments.</div>
+        <div class="cap-specs">
+          <div class="cap-spec"><span class="spec-val">2-4</span> Mics</div>
+          <div class="cap-spec"><span class="spec-val">&lt;5&deg;</span> Error</div>
+          <div class="cap-spec"><span class="spec-val">360&deg;</span> Azimuth</div>
+          <div class="cap-spec"><span class="spec-val">Real-time</span> @MCU</div>
+        </div>
+      </div>
+
+      <div class="cap-card tracking fade-in">
+        <div class="cap-badge proto">PROTOTYPE</div>
+        <div class="cap-icon">&#127919;</div>
+        <div class="cap-title">Object Tracking</div>
+        <div class="cap-desc">Lightweight SSM-based tracker maintains object state across frames. Recurrent hidden state acts as implicit motion model, predicting position with minimal compute per frame.</div>
+        <div class="cap-specs">
+          <div class="cap-spec"><span class="spec-val">&lt;20K</span> Params</div>
+          <div class="cap-spec"><span class="spec-val">30+</span> FPS</div>
+          <div class="cap-spec"><span class="spec-val">SSM</span> State Memory</div>
+          <div class="cap-spec"><span class="spec-val">MCU</span> Ready</div>
+        </div>
+      </div>
+
+      <div class="cap-card recognition fade-in">
+        <div class="cap-badge proto">PROTOTYPE</div>
+        <div class="cap-icon">&#128171;</div>
+        <div class="cap-title">Multi-Modal Fusion</div>
+        <div class="cap-desc">Audio-visual NC-SSM fuses speech and vision features through shared state space. Complementary modalities improve robustness when either channel is degraded.</div>
+        <div class="cap-specs">
+          <div class="cap-spec"><span class="spec-val">AV</span> Fusion</div>
+          <div class="cap-spec"><span class="spec-val">Shared</span> SSM State</div>
+          <div class="cap-spec"><span class="spec-val">Cross</span> Modal</div>
+          <div class="cap-spec"><span class="spec-val">Robust</span> Degradation</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section class="metrics-section" id="metrics">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Performance</div>
+      <div class="section-title">World-Class Efficiency</div>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-card cyan fade-in">
+        <div class="icon">&#9889;</div>
+        <div class="metric-value">7.1ms</div>
+        <div class="metric-label">Inference Latency</div>
+        <div class="metric-compare">1.8x faster than CNN baseline</div>
+      </div>
+      <div class="metric-card purple fade-in">
+        <div class="icon">&#128200;</div>
+        <div class="metric-value">95.3%</div>
+        <div class="metric-label">Clean Accuracy (GSC V2)</div>
+        <div class="metric-compare">Matches 7.5K-param CNN</div>
+      </div>
+      <div class="metric-card green fade-in">
+        <div class="icon">&#128267;</div>
+        <div class="metric-value">1.4mJ</div>
+        <div class="metric-label">Energy / Inference</div>
+        <div class="metric-compare">1.8x lower energy</div>
+      </div>
+      <div class="metric-card gold fade-in">
+        <div class="icon">&#129504;</div>
+        <div class="metric-value">0.86M</div>
+        <div class="metric-label">Model-Only MACs</div>
+        <div class="metric-compare">5.6x fewer than BC-ResNet-1</div>
+      </div>
+      <div class="metric-card red fade-in">
+        <div class="icon">&#127911;</div>
+        <div class="metric-value">77.7%</div>
+        <div class="metric-label">0dB Accuracy (No Augmentation)</div>
+        <div class="metric-compare">+11%p structural robustness</div>
+      </div>
+      <div class="metric-card pink fade-in">
+        <div class="icon">&#128065;</div>
+        <div class="metric-value">84.5%</div>
+        <div class="metric-label">Corrupted Image Avg (NC-Conv)</div>
+        <div class="metric-compare">+6.1% over augmented CNN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="comparison-section" id="comparison">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Benchmark</div>
+      <div class="section-title">NanoApple vs. The Competition</div>
+    </div>
+    <div class="comparison-table-wrap fade-in">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Model</th><th>Params</th><th>Clean</th><th>0dB Factory</th><th>0dB White</th><th>Full MACs</th><th>Latency</th><th>Energy</th><th>RAM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-row" style="background:rgba(0,229,255,0.08)">
+            <td class="model-name" style="color:var(--gold)">&#127822; NanoApple-Tiny (Ours)</td>
+            <td class="best crown" style="color:var(--gold)">4.6K</td><td>93.8%</td><td>84.2%</td><td>82.5%</td>
+            <td class="best crown" style="color:var(--gold)">2.10M</td><td class="best crown" style="color:var(--gold)">4.4ms</td>
+            <td class="best crown" style="color:var(--gold)">880uJ</td><td class="best" style="color:var(--gold)">18KB</td>
+          </tr>
+          <tr class="highlight-row">
+            <td class="model-name">NanoApple-Base (Ours)</td>
+            <td>7.5K</td><td>95.3%</td><td>86.8%</td><td>85.2%</td>
+            <td>3.42M</td><td>7.1ms</td>
+            <td>1,427uJ</td><td>32KB</td>
+          </tr>
+          <tr class="highlight-row">
+            <td class="model-name">NanoApple-20K (Ours)</td>
+            <td>20.0K</td><td class="best">96.4%</td><td class="best">89.7%</td><td class="best">88.4%</td>
+            <td>5.00M</td><td>10.4ms</td><td>&mdash;</td><td>&mdash;</td>
+          </tr>
+          <tr>
+            <td class="model-name" style="color:var(--text2)">BC-ResNet-1</td>
+            <td>7.5K</td><td>95.0%</td><td>88.0%</td><td>83.0%</td>
+            <td>6.15M</td><td>12.8ms</td><td>2,562uJ</td><td>30KB</td>
+          </tr>
+          <tr>
+            <td class="model-name" style="color:var(--text2)">DS-CNN-S</td>
+            <td>23.8K</td><td>96.4%</td><td>90.4%</td><td>88.8%</td>
+            <td>25.67M</td><td>53.5ms</td><td>10,703uJ</td><td>42KB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="text-align:center;margin-top:16px;font-size:12px;color:var(--text2)">
+      Google Speech Commands V2 (12-class). Latency on Cortex-M7 @ 480 MHz. Noise-augmented training.
+    </p>
+  </div>
+</section>
+
+<!-- NOISE ROBUSTNESS -->
+<section class="noise-section" id="noise">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Noise Robustness</div>
+      <div class="section-title">Hear Through the Noise</div>
+    </div>
+    <div class="noise-demo fade-in">
+      <div class="noise-control">
+        <div class="snr-display">
+          <div class="snr-value" id="snrValue">0</div>
+          <div class="snr-unit">dB Signal-to-Noise Ratio</div>
+        </div>
+        <input type="range" class="snr-slider" id="snrSlider" min="-15" max="15" value="0" step="5">
+        <div class="snr-labels">
+          <span>-15dB (Extreme)</span><span>0dB</span><span>+15dB (Clean)</span>
+        </div>
+        <div class="noise-bars" id="noiseBars">
+          <div class="noise-bar-item">
+            <div class="noise-bar-label" style="color:var(--accent)">NanoApple</div>
+            <div class="noise-bar-track"><div class="noise-bar-fill nano" id="barNano"></div></div>
+          </div>
+          <div class="noise-bar-item">
+            <div class="noise-bar-label" style="color:var(--danger)">BC-ResNet-1</div>
+            <div class="noise-bar-track"><div class="noise-bar-fill bcres" id="barBCRes"></div></div>
+          </div>
+          <div class="noise-bar-item">
+            <div class="noise-bar-label" style="color:var(--gold)">DS-CNN-S</div>
+            <div class="noise-bar-track"><div class="noise-bar-fill dscnn" id="barDSCNN"></div></div>
+          </div>
+        </div>
+        <p style="margin-top:20px;font-size:11px;color:var(--text2);text-align:center">Factory noise &mdash; Drag slider to explore</p>
+      </div>
+      <div class="noise-chart-wrap">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Structural Robustness (Clean-Trained Only)</h3>
+        <div class="chart-container"><canvas id="noiseChart"></canvas></div>
+        <p style="margin-top:14px;font-size:12px;color:var(--text2)">
+          Without noise augmentation: <strong style="color:var(--accent3)">77.7%</strong> at 0dB &mdash; <strong style="color:var(--accent3)">+11%p</strong> above CNN.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE DEMOS -->
+<section class="demo-section" id="demos">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Live Demos</div>
+      <div class="section-title">See It In Action</div>
+      <div class="section-desc">Interactive demonstrations of NanoApple's multi-modal capabilities, all running at edge-device efficiency.</div>
+    </div>
+    <div class="demo-grid fade-in">
+
+      <!-- Speech Demo -->
+      <div class="demo-card">
+        <div class="demo-icon">&#127908;</div>
+        <div class="demo-title">Speech Recognition</div>
+        <div class="demo-desc">Real-time keyword spotting with live noise injection. Watch NC-SSM maintain accuracy as noise increases.</div>
+        <div class="demo-viz">
+          <div class="waveform-mini" id="waveform1"></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">yes</span></span>
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">no</span></span>
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">stop</span></span>
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">go</span></span>
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">up</span></span>
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">down</span></span>
+        </div>
+      </div>
+
+      <!-- Tracking Demo -->
+      <div class="demo-card">
+        <div class="demo-icon">&#127919;</div>
+        <div class="demo-title">Object Tracking</div>
+        <div class="demo-desc">SSM-based tracker maintains object state across frames using recurrent hidden state as implicit motion model.</div>
+        <div class="demo-viz" style="background:#0a0a12">
+          <canvas id="trackingCanvas" width="360" height="180"></canvas>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:center">
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">30+</span> FPS</span>
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">SSM</span> State</span>
+        </div>
+      </div>
+
+      <!-- Direction Demo -->
+      <div class="demo-card">
+        <div class="demo-icon">&#129517;</div>
+        <div class="demo-title">Direction Estimation</div>
+        <div class="demo-desc">Sound source localization with multi-mic beamforming. Per-frequency SNR drives spatial selectivity.</div>
+        <div class="demo-viz" style="display:flex;align-items:center;justify-content:center">
+          <div class="compass" id="compass">
+            <div class="compass-arrow" id="compassArrow"></div>
+            <div class="compass-label n">N</div>
+            <div class="compass-label s">S</div>
+            <div class="compass-label e">E</div>
+            <div class="compass-label w">W</div>
+            <div id="compassDeg" style="position:absolute;bottom:-8px;font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--accent);font-weight:600"></div>
+          </div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:center">
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">360&deg;</span></span>
+          <span class="cap-spec" style="font-size:10px"><span class="spec-val">&lt;5&deg;</span> Error</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- VIDEO + VISION ROW -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px" class="fade-in">
+      <!-- Vision Demo -->
+      <div class="demo-card" style="text-align:left">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <span style="font-size:32px">&#128065;</span>
+          <div>
+            <div class="demo-title" style="margin-bottom:2px">Image Recognition</div>
+            <div style="font-size:11px;color:var(--text2)">NC-Conv: Noise-Conditioned CNN+SSM Hybrid</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div style="background:#000;border-radius:10px;padding:20px;text-align:center">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Clean Image</div>
+            <canvas id="visionClean" width="120" height="120" style="border-radius:6px"></canvas>
+            <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--accent3)">
+              <span id="cleanLabel">airplane</span>
+              <span style="font-size:11px;color:var(--text2)"> 97.2%</span>
+            </div>
+          </div>
+          <div style="background:#000;border-radius:10px;padding:20px;text-align:center">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Corrupted (Fog)</div>
+            <canvas id="visionCorrupt" width="120" height="120" style="border-radius:6px"></canvas>
+            <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--accent3)">
+              <span id="corruptLabel">airplane</span>
+              <span style="font-size:11px;color:var(--text2)"> 91.8%</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="cap-spec"><span class="spec-val">88.7%</span> Clean</span>
+          <span class="cap-spec"><span class="spec-val">+6.1%</span> Corrupted</span>
+          <span class="cap-spec"><span class="spec-val">+13.5%</span> Fog</span>
+        </div>
+      </div>
+
+      <!-- Video Demo -->
+      <div class="demo-card" style="text-align:left">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <span style="font-size:32px">&#127909;</span>
+          <div>
+            <div class="demo-title" style="margin-bottom:2px">Video Understanding</div>
+            <div style="font-size:11px;color:var(--text2)">Temporal NC-SSM &mdash; Frame-by-Frame Streaming</div>
+          </div>
+        </div>
+        <div style="background:#000;border-radius:10px;overflow:hidden;margin-bottom:20px;position:relative">
+          <canvas id="videoCanvas" width="440" height="200" style="width:100%;display:block"></canvas>
+          <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);padding:5px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px">
+            <span style="color:var(--accent3)" id="videoFPS">32.4 FPS</span>
+            <span style="color:var(--text2)"> | </span>
+            <span style="color:var(--accent)" id="videoAction">walking</span>
+          </div>
+          <div style="position:absolute;top:10px;right:10px;background:rgba(255,0,0,0.8);padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;animation:blink 1.5s infinite">
+            LIVE
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="cap-spec"><span class="spec-val">Streaming</span> SSM</span>
+          <span class="cap-spec"><span class="spec-val">&lt;10ms</span> /frame</span>
+          <span class="cap-spec"><span class="spec-val">Temporal</span> Memory</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EFFICIENCY -->
+<section class="efficiency-section" id="efficiency">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Efficiency</div>
+      <div class="section-title">Maximum Intelligence,<br>Minimum Resources</div>
+    </div>
+    <div class="efficiency-grid fade-in">
+      <div class="chart-card">
+        <h3>MAC Efficiency (Accuracy / Million MACs)</h3>
+        <div class="chart-container"><canvas id="efficiencyChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Resource Comparison (Lower is Better)</h3>
+        <div class="chart-container"><canvas id="radarChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="arch-section" id="architecture">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Architecture</div>
+      <div class="section-title">NC-SSM: Noise-Conditioned<br>State Space Model</div>
+    </div>
+    <div class="arch-pipeline fade-in">
+      <div class="arch-stage">
+        <div class="stage-icon">&#127908;</div>
+        <div class="stage-name">Audio / Image</div>
+        <div class="stage-detail">Multi-modal</div>
+      </div>
+      <div class="arch-arrow">&#10132;</div>
+      <div class="arch-stage">
+        <div class="stage-icon">&#128202;</div>
+        <div class="stage-name">Feature Extract</div>
+        <div class="stage-detail">STFT / Patch</div>
+      </div>
+      <div class="arch-arrow">&#10132;</div>
+      <div class="arch-stage highlight">
+        <div class="stage-icon">&#128065;</div>
+        <div class="stage-name">Quality Estimator</div>
+        <div class="stage-detail">0-param SNR/IQA</div>
+      </div>
+      <div class="arch-arrow">&#10132;</div>
+      <div class="arch-stage highlight">
+        <div class="stage-icon">&#9879;</div>
+        <div class="stage-name">Adaptive Frontend</div>
+        <div class="stage-detail">LSG + DualPCEN</div>
+      </div>
+      <div class="arch-arrow">&#10132;</div>
+      <div class="arch-stage highlight" style="border-color:rgba(124,77,255,0.4);background:rgba(124,77,255,0.06)">
+        <div class="stage-icon">&#129504;</div>
+        <div class="stage-name">NC-SSM Blocks</div>
+        <div class="stage-detail">Adaptive &sigma;</div>
+      </div>
+      <div class="arch-arrow">&#10132;</div>
+      <div class="arch-stage">
+        <div class="stage-icon">&#127919;</div>
+        <div class="stage-name">Task Head</div>
+        <div class="stage-detail">KWS/Cls/Track</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;max-width:680px;margin-left:auto;margin-right:auto" class="fade-in">
+      <p style="font-size:14px;color:var(--text2);line-height:1.8">
+        <strong style="color:var(--accent)">Key Innovation:</strong> Per-input quality estimation (SNR for audio, IQA for vision) drives adaptive selectivity &sigma;. Low quality &rarr; LTI mode (O(&sigma;<sub>n</sub><sup>2</sup>)), high quality &rarr; full SSM dynamics. One architecture handles all modalities.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MCU DEPLOYMENT -->
+<section class="mcu-section" id="deployment">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Edge Deployment</div>
+      <div class="section-title">Runs on Any MCU</div>
+    </div>
+    <div class="mcu-grid fade-in">
+      <div class="mcu-card">
+        <div class="badge">REFERENCE</div>
+        <h3>STM32H7</h3>
+        <p class="mcu-spec">Cortex-M7 @ 480 MHz</p>
+        <div class="mcu-stat"><span class="stat-label">Latency</span><span class="stat-value">7.1 ms</span></div>
+        <div class="mcu-stat"><span class="stat-label">Energy</span><span class="stat-value">1,427 uJ</span></div>
+        <div class="mcu-stat"><span class="stat-label">RAM</span><span class="stat-value">32 KB</span></div>
+        <div class="mcu-stat"><span class="stat-label">Flash</span><span class="stat-value">~15 KB</span></div>
+      </div>
+      <div class="mcu-card">
+        <h3>STM32L4</h3>
+        <p class="mcu-spec">Cortex-M4 @ 80 MHz</p>
+        <div class="mcu-stat"><span class="stat-label">Latency</span><span class="stat-value">~42 ms</span></div>
+        <div class="mcu-stat"><span class="stat-label">Energy</span><span class="stat-value">~756 uJ</span></div>
+        <div class="mcu-stat"><span class="stat-label">RAM</span><span class="stat-value">32 KB</span></div>
+        <div class="mcu-stat"><span class="stat-label">Flash</span><span class="stat-value">~15 KB</span></div>
+      </div>
+      <div class="mcu-card">
+        <h3>nRF5340</h3>
+        <p class="mcu-spec">Cortex-M33 @ 128 MHz</p>
+        <div class="mcu-stat"><span class="stat-label">Latency</span><span class="stat-value">~27 ms</span></div>
+        <div class="mcu-stat"><span class="stat-label">Energy</span><span class="stat-value">~810 uJ</span></div>
+        <div class="mcu-stat"><span class="stat-label">RAM</span><span class="stat-value">32 KB</span></div>
+        <div class="mcu-stat"><span class="stat-label">Flash</span><span class="stat-value">~15 KB</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container fade-in">
+    <h2><span class="gradient-text">The Future of Edge AI</span></h2>
+    <p>4,600 parameters is all you need. Speech. Vision. Video. Tracking. Direction.<br>One architecture. Every modality. Any MCU. NanoApple-Tiny.</p>
+    <a href="#capabilities" class="cta-btn">Explore Capabilities &#8595;</a>
+  </div>
+</section>
+
+<footer>
+  <p>&#127822; NanoApple AI Platform &mdash; CES 2027 &mdash; Interspeech 2026 &bull; IEEE/ACM TASLP 2026 &bull; ICCV 2027</p>
+</footer>
+
+<script>
+// ===== PARTICLES =====
+const pc = document.getElementById('particles');
+for (let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random()*100+'%';
+  p.style.animationDelay = Math.random()*6+'s';
+  p.style.animationDuration = (4+Math.random()*4)+'s';
+  pc.appendChild(p);
+}
+
+// ===== SCROLL ANIMATIONS =====
+const obs = new IntersectionObserver(e => {
+  e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+// ===== NAV SCROLL =====
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', e => { e.preventDefault(); document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'}); });
+});
+
+// ===== NOISE SLIDER =====
+const noiseData = {
+  '-15':[61.4,63.2,63.8],'-10':[71.0,73.5,72.0],'-5':[77.8,81.5,79.9],
+  '0':[86.8,88.0,90.4],'5':[91.2,92.0,93.5],'10':[93.8,94.0,95.2],'15':[95.0,94.8,96.1]
+};
+const snrSlider=document.getElementById('snrSlider'), snrValue=document.getElementById('snrValue');
+const barNano=document.getElementById('barNano'), barBCRes=document.getElementById('barBCRes'), barDSCNN=document.getElementById('barDSCNN');
+function updateNoise(){
+  const v=snrSlider.value;
+  snrValue.textContent=(v>=0?'+':'')+v;
+  const d=noiseData[v];
+  barNano.style.width=d[0]+'%'; barNano.textContent=d[0].toFixed(1)+'%';
+  barBCRes.style.width=d[1]+'%'; barBCRes.textContent=d[1].toFixed(1)+'%';
+  barDSCNN.style.width=d[2]+'%'; barDSCNN.textContent=d[2].toFixed(1)+'%';
+}
+snrSlider.addEventListener('input',updateNoise); updateNoise();
+
+// ===== WAVEFORM =====
+const wf = document.getElementById('waveform1');
+for(let i=0;i<40;i++){
+  const b=document.createElement('div');
+  b.className='bar';
+  b.style.animationDelay=(i*0.05)+'s';
+  wf.appendChild(b);
+}
+
+// ===== TRACKING CANVAS =====
+const tCanvas=document.getElementById('trackingCanvas');
+const tCtx=tCanvas.getContext('2d');
+let trackObjs=[
+  {x:60,y:90,vx:1.5,vy:0.8,color:'#00e5ff',label:'Person',w:30,h:40},
+  {x:200,y:60,vx:-1,vy:1.2,color:'#00e676',label:'Car',w:40,h:25},
+  {x:300,y:130,vx:-0.8,vy:-0.6,color:'#ff4081',label:'Bike',w:25,h:30}
+];
+let trackTrails=trackObjs.map(()=>[]);
+
+function drawTracking(){
+  tCtx.fillStyle='rgba(10,10,18,0.15)';
+  tCtx.fillRect(0,0,360,180);
+  trackObjs.forEach((o,i)=>{
+    o.x+=o.vx; o.y+=o.vy;
+    if(o.x<20||o.x>340) o.vx*=-1;
+    if(o.y<20||o.y>160) o.vy*=-1;
+    trackTrails[i].push({x:o.x,y:o.y});
+    if(trackTrails[i].length>30) trackTrails[i].shift();
+    // trail
+    tCtx.beginPath();
+    trackTrails[i].forEach((p,j)=>{
+      tCtx.globalAlpha=j/trackTrails[i].length*0.5;
+      if(j===0) tCtx.moveTo(p.x,p.y); else tCtx.lineTo(p.x,p.y);
+    });
+    tCtx.strokeStyle=o.color; tCtx.lineWidth=2; tCtx.stroke();
+    tCtx.globalAlpha=1;
+    // bbox
+    tCtx.strokeStyle=o.color; tCtx.lineWidth=2;
+    tCtx.strokeRect(o.x-o.w/2,o.y-o.h/2,o.w,o.h);
+    // label
+    tCtx.fillStyle=o.color; tCtx.font='bold 10px Inter';
+    tCtx.fillText(o.label,o.x-o.w/2,o.y-o.h/2-4);
+    // center dot
+    tCtx.beginPath(); tCtx.arc(o.x,o.y,3,0,Math.PI*2);
+    tCtx.fillStyle=o.color; tCtx.fill();
+  });
+  requestAnimationFrame(drawTracking);
+}
+drawTracking();
+
+// ===== COMPASS DIRECTION =====
+let compassAngle=0;
+const compassArrow=document.getElementById('compassArrow');
+const compassDeg=document.getElementById('compassDeg');
+function updateCompass(){
+  compassAngle+=(Math.sin(Date.now()/2000)*2+Math.cos(Date.now()/3000)*1.5);
+  const deg=((compassAngle%360)+360)%360;
+  compassArrow.style.transform=`rotate(${compassAngle}deg)`;
+  compassDeg.textContent=Math.round(deg)+'°';
+  requestAnimationFrame(updateCompass);
+}
+updateCompass();
+
+// ===== VISION CANVASES =====
+function drawPixelArt(canvas, corrupt){
+  const ctx=canvas.getContext('2d');
+  const s=10;
+  // simple airplane shape
+  const shape=[
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,1,1,1,1,1,0,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0],
+  ];
+  for(let y=0;y<12;y++){
+    for(let x=0;x<12;x++){
+      if(shape[y]&&shape[y][x]){
+        let r=100,g=180,b=255;
+        if(corrupt){
+          const fog=0.5+Math.random()*0.3;
+          r=Math.round(r*(1-fog)+200*fog);
+          g=Math.round(g*(1-fog)+200*fog);
+          b=Math.round(b*(1-fog)+210*fog);
+        }
+        ctx.fillStyle=`rgb(${r},${g},${b})`;
+      } else {
+        let r=20,g=20,b=30;
+        if(corrupt){
+          const fog=0.3+Math.random()*0.2;
+          r=Math.round(r+150*fog); g=Math.round(g+150*fog); b=Math.round(b+160*fog);
+        }
+        ctx.fillStyle=`rgb(${r},${g},${b})`;
+      }
+      ctx.fillRect(x*s,y*s,s,s);
+    }
+  }
+}
+drawPixelArt(document.getElementById('visionClean'),false);
+drawPixelArt(document.getElementById('visionCorrupt'),true);
+
+// ===== VIDEO CANVAS =====
+const vCanvas=document.getElementById('videoCanvas');
+const vCtx=vCanvas.getContext('2d');
+let videoFrame=0;
+const actions=['walking','running','waving','standing','walking','jumping'];
+let actionIdx=0, actionTimer=0;
+
+function drawVideo(){
+  videoFrame++;
+  vCtx.fillStyle='rgba(10,10,18,0.2)';
+  vCtx.fillRect(0,0,440,200);
+
+  // ground
+  vCtx.strokeStyle='rgba(255,255,255,0.05)';
+  for(let x=0;x<440;x+=40){
+    vCtx.beginPath();
+    vCtx.moveTo((x+videoFrame)%440,150);
+    vCtx.lineTo((x+videoFrame)%440,200);
+    vCtx.stroke();
+  }
+  vCtx.fillStyle='rgba(255,255,255,0.02)';
+  vCtx.fillRect(0,150,440,50);
+
+  // stick figure
+  const cx=220, cy=120;
+  const limbPhase=Math.sin(videoFrame*0.1)*15;
+  vCtx.strokeStyle='#00e5ff'; vCtx.lineWidth=2;
+  // head
+  vCtx.beginPath(); vCtx.arc(cx,cy-40,8,0,Math.PI*2); vCtx.stroke();
+  // body
+  vCtx.beginPath(); vCtx.moveTo(cx,cy-32); vCtx.lineTo(cx,cy); vCtx.stroke();
+  // arms
+  vCtx.beginPath(); vCtx.moveTo(cx-20,cy-15+limbPhase*0.3); vCtx.lineTo(cx,cy-25); vCtx.lineTo(cx+20,cy-15-limbPhase*0.3); vCtx.stroke();
+  // legs
+  vCtx.beginPath(); vCtx.moveTo(cx-15,cy+25+limbPhase*0.5); vCtx.lineTo(cx,cy); vCtx.lineTo(cx+15,cy+25-limbPhase*0.5); vCtx.stroke();
+
+  // bbox
+  vCtx.strokeStyle='rgba(0,229,255,0.5)'; vCtx.lineWidth=1;
+  vCtx.strokeRect(cx-30,cy-52,60,82);
+  vCtx.fillStyle='rgba(0,229,255,0.8)'; vCtx.font='bold 10px JetBrains Mono';
+
+  // SSM state bars (right side)
+  vCtx.fillStyle='rgba(255,255,255,0.03)';
+  vCtx.fillRect(340,20,90,160);
+  vCtx.fillStyle='rgba(255,255,255,0.05)';
+  vCtx.font='9px JetBrains Mono';
+  vCtx.fillText('SSM State',350,35);
+  for(let i=0;i<8;i++){
+    const h=Math.abs(Math.sin(videoFrame*0.05+i*0.8))*40+5;
+    const gradient=vCtx.createLinearGradient(0,0,0,h);
+    gradient.addColorStop(0,'rgba(0,229,255,0.8)');
+    gradient.addColorStop(1,'rgba(124,77,255,0.4)');
+    vCtx.fillStyle=gradient;
+    vCtx.fillRect(350+i*9,150-h,7,h);
+  }
+
+  // action label
+  actionTimer++;
+  if(actionTimer>120){actionTimer=0;actionIdx=(actionIdx+1)%actions.length;}
+  document.getElementById('videoAction').textContent=actions[actionIdx];
+  document.getElementById('videoFPS').textContent=(30+Math.random()*5).toFixed(1)+' FPS';
+
+  requestAnimationFrame(drawVideo);
+}
+drawVideo();
+
+// ===== CHARTS =====
+// Noise Chart
+new Chart(document.getElementById('noiseChart').getContext('2d'), {
+  type:'line',
+  data:{
+    labels:['-15','-10','-5','0','5','10','15','Clean'],
+    datasets:[
+      {label:'NanoApple (Ours)',data:[38.5,52,66,77.7,86,91.5,94.2,95.3],borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.1)',borderWidth:3,fill:true,tension:.3,pointRadius:4,pointHoverRadius:7},
+      {label:'BC-ResNet-1',data:[25,38,52,66.7,78,88,93,95],borderColor:'#ff5252',borderWidth:2,fill:false,tension:.3,pointRadius:3,borderDash:[6,4]},
+      {label:'DS-CNN-S',data:[18,28,40,53.2,68,82,91,96.4],borderColor:'#ffd740',borderWidth:2,fill:false,tension:.3,pointRadius:3,borderDash:[3,3]}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#8888aa',font:{size:11}}}},
+    scales:{
+      x:{title:{display:true,text:'SNR (dB)',color:'#8888aa'},ticks:{color:'#8888aa'},grid:{color:'rgba(255,255,255,0.03)'}},
+      y:{title:{display:true,text:'Accuracy (%)',color:'#8888aa'},ticks:{color:'#8888aa'},grid:{color:'rgba(255,255,255,0.03)'},min:10,max:100}
+    }
+  }
+});
+
+// Efficiency Chart
+new Chart(document.getElementById('efficiencyChart').getContext('2d'), {
+  type:'bar',
+  data:{
+    labels:['Full-Pipeline\n(%/M MACs)','Model-Only\n(%/M MACs)'],
+    datasets:[
+      {label:'NanoApple',data:[27.8,110.8],backgroundColor:'rgba(0,229,255,0.8)',borderRadius:6},
+      {label:'BC-ResNet-1',data:[15.4,19.0],backgroundColor:'rgba(255,82,82,0.6)',borderRadius:6},
+      {label:'DS-CNN-S',data:[3.8,4.7],backgroundColor:'rgba(255,215,64,0.6)',borderRadius:6}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#8888aa',font:{size:11}}}},
+    scales:{
+      x:{ticks:{color:'#8888aa'},grid:{color:'rgba(255,255,255,0.03)'}},
+      y:{title:{display:true,text:'Acc per M MACs',color:'#8888aa'},ticks:{color:'#8888aa'},grid:{color:'rgba(255,255,255,0.03)'}}
+    }
+  }
+});
+
+// Radar Chart
+new Chart(document.getElementById('radarChart').getContext('2d'), {
+  type:'radar',
+  data:{
+    labels:['Parameters','MACs','Latency','Energy','RAM'],
+    datasets:[
+      {label:'NanoApple',data:[7.5,3.42,7.1,1.4,32],borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.15)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#00e5ff'},
+      {label:'BC-ResNet-1',data:[7.5,6.15,12.8,2.6,30],borderColor:'#ff5252',backgroundColor:'rgba(255,82,82,0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#ff5252'},
+      {label:'DS-CNN-S',data:[23.8,25.67,53.5,10.7,42],borderColor:'#ffd740',backgroundColor:'rgba(255,215,64,0.05)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#ffd740'}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#8888aa',font:{size:11}}}},
+    scales:{r:{angleLines:{color:'rgba(255,255,255,0.05)'},grid:{color:'rgba(255,255,255,0.05)'},pointLabels:{color:'#8888aa',font:{size:10}},ticks:{display:false},suggestedMin:0}}
+  }
+});
+
+// ===== DOMAIN PILLS INTERACTIVITY =====
+document.querySelectorAll('.domain-pill').forEach(pill=>{
+  pill.addEventListener('click',()=>{
+    document.querySelectorAll('.domain-pill').forEach(p=>p.classList.remove('active'));
+    pill.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
